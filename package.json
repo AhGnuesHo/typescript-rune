@@ -10,6 +10,7 @@
         "format": "prettier --write ."
     },
     "dependencies": {
+        "@fxts/core": "^0.29.0",
         "rune-ts": "^0.8.8"
     },
     "devDependencies": {

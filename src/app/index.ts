@@ -1,22 +1,30 @@
 import './style.styl';
-import { View, html } from 'rune-ts';
-import { RuneAlert } from './types';
+import { AlertView } from '../components/cells/Alerts/Alert';
+import {  SquareView } from '../components/cells/Squares/Square';
+import {  StateView } from '../components/cells/States/State';
+import { html, View } from 'rune-ts';
 
-export class AlertView extends View<RuneAlert> {
-    override template({ name }: RuneAlert) {
-        return html` <button type="button">${name}</button> `;
-    }
 
-    override onRender() {
-        this.element().addEventListener('click', () => {
-            alert(this.data.message);
-        });
+interface HomeViewData{
+    initPlayerState : boolean
+}
+
+export class HomeView extends View<HomeViewData> {
+    private stateView = new StateView({playerState : this.data.initPlayerState});
+    private squareView = new SquareView({
+        playerState : this.data.initPlayerState,
+        changeCurrentPlayer : this.stateView.changePlayer
+    });
+
+    override template() {
+        return html`<div>
+            ${this.stateView}
+            ${this.squareView}
+        </div>`;
     }
 }
 
-const colorView = new AlertView({
-    name: 'Hello Rune! 😎',
-    message: 'Hello Ruuuuuune~~😎',
-});
 
-document.body.appendChild(colorView.render());
+const homeView = new HomeView({initPlayerState : true});
+
+document.body.appendChild(homeView.render());
