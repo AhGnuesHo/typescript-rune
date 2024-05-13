@@ -1,30 +1,31 @@
 import './style.styl';
-import { AlertView } from '../components/cells/Alerts/Alert';
-import {  SquareView } from '../components/cells/Squares/Square';
-import {  StateView } from '../components/cells/States/State';
+import { SquareView } from '../components/cells/Squares/Square';
+import { PlayerView } from '../components/cells/States/State';
 import { html, View } from 'rune-ts';
-
 
 interface HomeViewData{
     initPlayerState : boolean
 }
 
 export class HomeView extends View<HomeViewData> {
-    private stateView = new StateView({playerState : this.data.initPlayerState});
+    private playerView = new PlayerView({
+        player : this.data.initPlayerState});
+
     private squareView = new SquareView({
-        playerState : this.data.initPlayerState,
-        changeCurrentPlayer : this.stateView.changePlayer
+        player : this.data.initPlayerState
     });
 
     override template() {
         return html`<div>
-            ${this.stateView}
+            ${this.playerView}
             ${this.squareView}
         </div>`;
     }
+
+     override onMount() {
+        this.squareView.addEventListener('change',
+            () => this.playerView.change())
+    }
 }
 
-
-const homeView = new HomeView({initPlayerState : true});
-
-document.body.appendChild(homeView.render());
+document.body.appendChild(new HomeView({initPlayerState : true}).render());
