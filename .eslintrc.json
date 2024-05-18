@@ -6,10 +6,12 @@
         "sourceType": "module",
         "allowImportExportEverywhere": true
     },
-    "rules": {},
+    "rules": {
+        "@typescript-eslint/no-unused-vars": "off"
+    },
     "env": {
         "browser": true,
-        "esnext": true
+        "es2020": true
     },
     "globals": {},
     "overrides": [
