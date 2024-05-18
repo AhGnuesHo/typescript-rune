@@ -34,7 +34,7 @@ export class TodoListView extends ListView<Todo, TodoItemView> {
     }
 }
 
-export class inputTaxtView extends View<{ value?: string }> {
+export class inputTextView extends View<{ value?: string }> {
     returnValue = this.data.value ?? '';
 
     override template() {
@@ -53,7 +53,7 @@ export class inputTaxtView extends View<{ value?: string }> {
 }
 
 export class TodoPage extends View<Todo[]> {
-    inputTaxtView = new inputTaxtView({});
+    inputTextView = new inputTextView({});
 
     checkListManager = new CheckListManager(
         new CheckView({ on: false }),
@@ -65,7 +65,7 @@ export class TodoPage extends View<Todo[]> {
     override template() {
         return html`
             <div>
-                <div class="header">${this.inputTaxtView} ${this.checkListManager.checkAllView}</div>
+                <div class="header">${this.inputTextView} ${this.checkListManager.checkAllView}</div>
 
                 ${this.checkListManager.listView}
             </div>
@@ -73,12 +73,12 @@ export class TodoPage extends View<Todo[]> {
     }
 
     override onMount() {
-        this.inputTaxtView.addEventListener('return', () => this._append());
+        this.inputTextView.addEventListener('return', () => this._append());
     }
 
     private _append() {
         this.checkListManager.listView.append({
-            title: this.inputTaxtView.returnValue,
+            title: this.inputTextView.returnValue,
             completed: false,
         });
     }
