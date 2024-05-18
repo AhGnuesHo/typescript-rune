@@ -34,7 +34,27 @@ export class TodoListView extends ListView<Todo, TodoItemView> {
     }
 }
 
+export class inputTaxtView extends View<{ value?: string }> {
+    returnValue = this.data.value ?? '';
+
+    override template() {
+        return html`<input type="text" value="${this.returnValue}" />`;
+    }
+
+    @on('keypress')
+    private _keypress(e: KeyboardEvent) {
+        if (e.code === 'Enter') {
+            const input = e.target as HTMLInputElement;
+            this.returnValue = input.value;
+            input.value = '';
+            this.element().dispatchEvent(new Event('return', { bubbles: true }));
+        }
+    }
+}
+
 export class TodoPage extends View<Todo[]> {
+    inputTaxtView = new inputTaxtView({});
+
     checkListManager = new CheckListManager(
         new CheckView({ on: false }),
         new TodoListView(this.data),
@@ -45,25 +65,21 @@ export class TodoPage extends View<Todo[]> {
     override template() {
         return html`
             <div>
-                <div class="header">
-                    ${this.checkListManager.checkAllView}
-                    <input type="text" />
-                </div>
+                <div class="header">${this.inputTaxtView} ${this.checkListManager.checkAllView}</div>
+
                 ${this.checkListManager.listView}
             </div>
         `;
     }
 
-    @on('keypress')
-    private _keypress(e: KeyboardEvent) {
-        if (e.key === 'Enter') {
-            const input = e.target as HTMLInputElement;
-            this.checkListManager.listView.append({
-                title: input.value,
-                completed: false,
-            });
+    override onMount() {
+        this.inputTaxtView.addEventListener('return', () => this._append());
+    }
 
-            input.value = '';
-        }
+    private _append() {
+        this.checkListManager.listView.append({
+            title: this.inputTaxtView.returnValue,
+            completed: false,
+        });
     }
 }
